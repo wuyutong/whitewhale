@@ -28,8 +28,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".module.MyCenterActivity"
+        <activity
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".module.MyCenterActivity"
             />
+        <activity
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".weex.wxextend.activity.TFWXActivity"></activity>
     </application>
 
 </manifest>

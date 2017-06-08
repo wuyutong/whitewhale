@@ -20,8 +20,7 @@ import java.util.HashMap;
 public class TFWXUtil {
 
 //    public static String wxBaseUrl = "https://api.doufu.la/weex";
-//   public static  String wxBaseUrl = "http://chatnovel.com/public/weex";//test
-   public static  String wxBaseUrl = "http://10.0.0.8/diaobao_php/web/api.doufu.diaobao.la/weex";//test
+   public static  String wxBaseUrl = "http://10.0.0.8/chatnovel/public/weex";//test
 
     public static HashMap dayColorMap = null ;
     public static HashMap nightColorMap = null ;

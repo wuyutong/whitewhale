@@ -14,8 +14,7 @@ public class MyCenterActivity extends TFWXActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         HashMap param = new HashMap();
-//        param.put("url","MyCenter/WWTest.js");
-        param.put("url","TFNotice/WWTest.js");
+        param.put("url","MyCenter/WWMyCenter.js");
         QLXGlobal.setActivityParam(MyCenterActivity.class,param);
         super.onCreate(savedInstanceState);
     }

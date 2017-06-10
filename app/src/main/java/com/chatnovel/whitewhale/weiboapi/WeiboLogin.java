@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.thirdparty.weiboapi;
+package com.chatnovel.whitewhale.weiboapi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

@@ -4,6 +4,15 @@ public class AccountService {
     private static AccountService instance = new AccountService();
     private int uid;
     private boolean isLogin;
+    private int loginType;
+
+    public int getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(int loginType) {
+        this.loginType = loginType;
+    }
 
     public static AccountService getInstance() {
         return instance;

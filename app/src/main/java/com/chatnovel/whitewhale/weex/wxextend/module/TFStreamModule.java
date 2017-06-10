@@ -2,10 +2,10 @@ package com.chatnovel.whitewhale.weex.wxextend.module;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpError;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpRequest;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpResponse;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpUtil;
+import com.chatnovel.whitewhale.network.okhttp.HttpError;
+import com.chatnovel.whitewhale.network.okhttp.HttpRequest;
+import com.chatnovel.whitewhale.network.okhttp.HttpResponse;
+import com.chatnovel.whitewhale.network.okhttp.HttpUtil;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 
 public class TFStreamModule extends WXModule {
-    private HashMap<String,TFHttpRequest> requests = new HashMap<String,TFHttpRequest>();
+    private HashMap<String,HttpRequest> requests = new HashMap<String,HttpRequest>();
 
     @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
     public void requestGet(String url, String jsonParam, final JSCallback callback){
@@ -26,8 +26,8 @@ public class TFStreamModule extends WXModule {
             key = url + jsonParam.trim();
         }
         if (key instanceof String){
-            TFHttpRequest request = requests.get(key);
-            if (request != null && request instanceof TFHttpRequest){
+            HttpRequest request = requests.get(key);
+            if (request != null && request instanceof HttpRequest){
                 request.cancel();
             }
 
@@ -38,9 +38,9 @@ public class TFStreamModule extends WXModule {
             final String _key = key;
             final WeakReference<TFStreamModule> weakSelf = new WeakReference<TFStreamModule>(this);
 //            block(@{@"data":result,@"code":@(code),@"statusText":statusText,@"ok":@(ok)});
-            request = TFHttpUtil.requestGet(url,  param, new TFHttpResponse() {
+            request = HttpUtil.requestGet(url,  param, new HttpResponse() {
                 @Override
-                public void onResponse(JSONObject json, TFHttpError error) {
+                public void onResponse(JSONObject json, HttpError error) {
                     TFStreamModule self = weakSelf.get();
                     if (self == null){
                         return ;
@@ -73,8 +73,8 @@ public class TFStreamModule extends WXModule {
             key = url + jsonParam.trim();
         }
         if (key instanceof String){
-            TFHttpRequest request = requests.get(key);
-            if (request != null && request instanceof TFHttpRequest){
+            HttpRequest request = requests.get(key);
+            if (request != null && request instanceof HttpRequest){
                 request.cancel();
             }
             JSONObject param = null;
@@ -83,9 +83,9 @@ public class TFStreamModule extends WXModule {
             }
             final String _key = key;
             final WeakReference<TFStreamModule> weakSelf = new WeakReference<TFStreamModule>(this);
-            request = TFHttpUtil.requestPost(url,  param, new TFHttpResponse() {
+            request = HttpUtil.requestPost(url,  param, new HttpResponse() {
                 @Override
-                public void onResponse(JSONObject json, TFHttpError error) {
+                public void onResponse(JSONObject json, HttpError error) {
                     TFStreamModule self = weakSelf.get();
                     if (self == null){
                         return ;

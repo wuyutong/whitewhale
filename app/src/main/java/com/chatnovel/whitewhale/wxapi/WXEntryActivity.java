@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.thirdparty.wxapi;
+package com.chatnovel.whitewhale.wxapi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -56,7 +56,7 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
 		if (resp.getType() == ConstantsAPI.COMMAND_SENDAUTH) {//登陆授权
 			if (resp.errCode == BaseResp.ErrCode.ERR_OK){//用户同意
 				String code = ((SendAuth.Resp) resp).code;
-
+				WeixinLogin.getInstance(this).wxCodeLogin(code);
 			}else {
 				UIUtil.toastMessage(this, "授权失败，请重新登录");
 			}

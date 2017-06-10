@@ -2,11 +2,15 @@ package com.chatnovel.whitewhale.weex.wxextend.module;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chatnovel.whitewhale.base.BaseActivity;
+import com.chatnovel.whitewhale.module.login.LoginType;
+import com.chatnovel.whitewhale.module.pay.PayActivity;
+import com.chatnovel.whitewhale.wxapi.WeixinLogin;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXApplicationUtil;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXStringUtil;
@@ -27,9 +31,11 @@ import java.util.Map;
 
 
 public class TFBridgeMoule extends WXModule {
-    final static int TFAtResult = 12;
     public enum TFBridgeType{
-        TFBridgeTypeDynamic(0) , // 根据param字典 动态打开
+        TFBridgeTypeWeb(0),//打开web页面
+        TFBridgeTypeLogin(1),//登录
+        TFBridgeTypePay(2),//支付
+        TFBridgeTypeShare(3),
         TFBridgeTypeStatusBarLight(13),// 状态栏边成白色
         TFBridgeTypeStatusBarDark(14);// 状态栏边成黑色
         
@@ -65,24 +71,28 @@ public class TFBridgeMoule extends WXModule {
 
                 }
                 switch (type){
-                    case TFBridgeTypeDynamic: {
+                    case TFBridgeTypeWeb:  //打开web页面
 
                         break;
-                    }
+                    case TFBridgeTypeLogin://登录
+                        login(pageParam);
+                        break;
+                    case TFBridgeTypePay: //支付
+                        pay(pageParam);
+                        break;
+                    case TFBridgeTypeShare://分享
+                        break;
 
                     case TFBridgeTypeStatusBarLight:
-                    {
                         try {
-                                TFWXActivity activity = (TFWXActivity) mWXSDKInstance.getContext();
-                                StatusBarCompatFlavorRom.setLightStatusBar(activity.getWindow(), false);
-
+                            TFWXActivity activity = (TFWXActivity) mWXSDKInstance.getContext();
+                            StatusBarCompatFlavorRom.setLightStatusBar(activity.getWindow(), false);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                         break;
-                    }
+
                     case TFBridgeTypeStatusBarDark:
-                    {
                         try {
                             TFWXActivity activity = (TFWXActivity ) mWXSDKInstance.getContext();
                             StatusBarCompatFlavorRom.setLightStatusBar(activity.getWindow(), true);
@@ -90,16 +100,31 @@ public class TFBridgeMoule extends WXModule {
                             e.printStackTrace();
                         }
                         break;
-                    }
                     default:
-                    {
                         Toast.makeText(QLXGlobal.getApplication(), "请升级新版本体验该功能", Toast.LENGTH_SHORT).show();
-                    }
                 }
 
             }
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    private void pay(JSONObject jsonObject) {
+        Intent intent = new Intent();
+        intent.setClass(mWXSDKInstance.getContext(), PayActivity.class);
+        intent.putExtra(PayActivity.INTENT_KEY_PAY_DATA, jsonObject.getString("charge"));
+        mWXSDKInstance.getContext().startActivity(intent);
+    }
+
+    private void login(JSONObject jsonObject){
+        int loginType = jsonObject.getInteger("loginType");
+        if (loginType == LoginType.Weixin) {
+            WeixinLogin.getInstance(mWXSDKInstance.getContext()).sendWeChatLogin();
+        } else if (loginType == LoginType.QQ) {
+
+        } else if (loginType == LoginType.Weibo) {
+
         }
     }
 

@@ -3,10 +3,10 @@ import android.content.SharedPreferences;
 import com.alibaba.fastjson.JSONObject;
 import com.chatnovel.whitewhale.utils.FileUtil;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpError;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpRequest;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpResponse;
-import com.chatnovel.whitewhale.weex.wxextend.utils.http.TFHttpUtil;
+import com.chatnovel.whitewhale.network.okhttp.HttpError;
+import com.chatnovel.whitewhale.network.okhttp.HttpRequest;
+import com.chatnovel.whitewhale.network.okhttp.HttpResponse;
+import com.chatnovel.whitewhale.network.okhttp.HttpUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class TFHotUpdateUtil {
 
     private static boolean lastedVersion = false;// 是否为最新脚本包
     private static boolean isDownloading = false;// 是否在下载中
-    private static TFHttpRequest request;
+    private static HttpRequest request;
 
     public static void  updateIfNeed(){
         if (lastedVersion == false && isDownloading == false){
@@ -29,9 +29,9 @@ public class TFHotUpdateUtil {
 
             HashMap param = new HashMap();
             param.put("version", version);
-            request = TFHttpUtil.requestGet(url, param, new TFHttpResponse() {
+            request = HttpUtil.requestGet(url, param, new HttpResponse() {
                 @Override
-                public void onResponse(JSONObject json, TFHttpError error) {
+                public void onResponse(JSONObject json, HttpError error) {
                     if ((error == null) && (json instanceof JSONObject)){
                         try {
                            if (json.getInteger("status") == 0){
@@ -107,9 +107,9 @@ public class TFHotUpdateUtil {
 
 
 
-        TFHttpUtil.downLoadFile(url, path, new TFHttpResponse() {
+        HttpUtil.downLoadFile(url, path, new HttpResponse() {
             @Override
-            public void onResponse(JSONObject json, TFHttpError error) {
+            public void onResponse(JSONObject json, HttpError error) {
 
                 isDownloading = false;
           try {

@@ -1,14 +1,13 @@
-package com.chatnovel.whitewhale.weex.wxextend.utils.http;
+package com.chatnovel.whitewhale.network.okhttp;
 
 import okhttp3.Call;
 
 /**
- * Created by qlx on 2016/12/9.
+ * Created by Wyatt on 2017/6/9/009.
  */
-
-public class TFHttpRequest {
+public class HttpRequest {
     private Call mCall = null;
-    TFHttpRequest(Call call){
+    HttpRequest(Call call){
         mCall = call;
     }
 

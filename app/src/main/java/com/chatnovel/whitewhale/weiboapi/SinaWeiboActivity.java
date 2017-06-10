@@ -1,4 +1,4 @@
-//package com.chatnovel.whitewhale.thirdparty.weiboapi;
+//package com.chatnovel.whitewhale.weiboapi;
 //
 //import android.annotation.SuppressLint;
 //import android.app.Activity;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chatnovel.whitewhale.thirdparty.weiboapi;
+package com.chatnovel.whitewhale.weiboapi;
 
 import android.content.Context;
 import android.content.SharedPreferences;

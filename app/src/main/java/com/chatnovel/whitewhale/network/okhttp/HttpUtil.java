@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.weex.wxextend.utils.http;
+package com.chatnovel.whitewhale.network.okhttp;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -22,25 +22,23 @@ import okhttp3.Response;
 
 
 /**
- * Created by qlx on 2016/12/9.
+ * Created by Wyatt on 2017/6/9/009.
  */
-
-public class TFHttpUtil {
+public class HttpUtil {
 
     private static String baseUrl = Constant.BASE_URL;//外网
-    //private static String baseUrl = "http://187.api.doufu.diaobao.la/index.php";//内网
 
     private static OkHttpClient okHttpClient = new OkHttpClient();
     private static Handler handler = new Handler(Looper.getMainLooper());
 
 
-    public static TFHttpRequest requestGet(String url, Map params, TFHttpResponse response) {
+    public static HttpRequest requestGet(String url, Map params, HttpResponse response) {
         Request request = buildRequest(url, Method.GET, params);
         return request(request, response);
     }
 
 
-    public static TFHttpRequest requestPost(String url, Map params, TFHttpResponse response) {
+    public static HttpRequest requestPost(String url, Map params, HttpResponse response) {
         Request request = buildRequest(url, Method.POST, params);
         return request(request, response);
     }
@@ -58,7 +56,6 @@ public class TFHttpUtil {
     private static Request buildRequest(String url, Method method, Map<String, String> params) {
         url = getAbsoluteUrl(url);
         Request request = null;
-
         if (method == Method.GET) {
             Request.Builder reqBuild = new Request.Builder();
             HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
@@ -68,8 +65,7 @@ public class TFHttpUtil {
                     urlBuilder.addQueryParameter(entry.getKey(), toStringValue(entry.getValue()));
                 }
             }
-            DiaobaoCookieStore cookies = TFCookieUtil.getCookies();
-            reqBuild.header("Cookie", TFCookieUtil.cookieHeader(cookies));
+            reqBuild.addHeader("Accept","application/x.chatnovel.v1+json");
             request = reqBuild.url(urlBuilder.build()).build();
 
 
@@ -81,45 +77,42 @@ public class TFHttpUtil {
             for (Map.Entry<String, String> entry : entrySet) {
                 formBody.add(entry.getKey(), toStringValue(entry.getValue()));
             }
-            DiaobaoCookieStore cookies = TFCookieUtil.getCookies();
-            builder.header("Cookie", TFCookieUtil.cookieHeader(cookies));
+            builder.addHeader("Accept","application/x.chatnovel.v1+json");
             request = builder.post(formBody.build()).build();
         }
-
-
         return request;
     }
 
 
-    private static TFHttpRequest request(Request request, final TFHttpResponse callBack) {
+    private static HttpRequest request(Request request, final HttpResponse callBack) {
 
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 if (call != null && call.isCanceled() == false){
-                    TFHttpUtil.handleResponseOnMainThreadExcuted(callBack, null);
+                    HttpUtil.handleResponseOnMainThreadExcuted(callBack, null);
                 }
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (call != null && call.isCanceled() == false){
-                    TFHttpUtil.handleResponseOnMainThreadExcuted(callBack, response);
+                    HttpUtil.handleResponseOnMainThreadExcuted(callBack, response);
                 }
 
             }
         });
-        return new TFHttpRequest(call);
+        return new HttpRequest(call);
     }
 
-    private static void handleResponseOnMainThreadExcuted(final TFHttpResponse callBack , final Response response){
+    private static void handleResponseOnMainThreadExcuted(final HttpResponse callBack , final Response response){
         if (callBack == null){
             return ;
         }
         JSONObject json = null;
-        TFHttpError error = null;
+        HttpError error = null;
         if (response == null){
-            error = new TFHttpError("网络异常，请检查网络后再试", -1);
+            error = new HttpError("网络异常，请检查网络后再试", -1);
         }else {
             if (response.isSuccessful()){
                 try {
@@ -131,15 +124,15 @@ public class TFHttpUtil {
                         }
                     }
                 } catch (Exception e) {//hot fixed
-                    error = new TFHttpError("数据解析异常",-100);//changed
+                    error = new HttpError("数据解析异常",-100);//changed
                     e.printStackTrace();
                 }
             }else {
-                error = new TFHttpError(response.message(),response.code());
+                error = new HttpError(response.message(),response.code());
             }
         }
         final JSONObject resJson = json;
-        final TFHttpError resError = error;
+        final HttpError resError = error;
         if (handler != null){
             handler.post(new Runnable() {
                 @Override
@@ -165,28 +158,14 @@ public class TFHttpUtil {
             return "";
         }
 
-        if (url.startsWith("https")){
-            return url;
-        }
-
         if (url.startsWith("http")){
-            int index = url.indexOf("index.php");
-            if (index >= 0){
-                String retitaveUrl = url.substring(index + 9);
-                if (retitaveUrl instanceof String){
-                    return baseUrl + retitaveUrl;
-                }
-            }
             return url;
-        }else {
-
+        }else{
             if (url.startsWith("/")){
                 return baseUrl + url.substring(1);
             }else {
                 return baseUrl + url;
             }
-
-
         }
     }
 
@@ -195,7 +174,7 @@ public class TFHttpUtil {
      * @param fileUrl 文件url
      * @param destFileFullPath 存储目标目录
      */
-    public  static void downLoadFile(String fileUrl, final String destFileFullPath, final TFHttpResponse callback) {
+    public  static void downLoadFile(String fileUrl, final String destFileFullPath, final HttpResponse callback) {
 
 
         final File file = new File(destFileFullPath);
@@ -218,7 +197,7 @@ public class TFHttpUtil {
             public void onFailure(Call call, IOException e) {
 
                 if (callback != null){
-                    TFHttpError error = new TFHttpError("网络不好", -1);
+                    HttpError error = new HttpError("网络不好", -1);
                     callback.onResponse(null,error);
                 }
             }
@@ -249,7 +228,7 @@ public class TFHttpUtil {
                     json.put("destFilePath",destFileFullPath);
                     callback.onResponse(json,null);
                 } catch (IOException e) {
-                    callback.onResponse(null,new TFHttpError("下载失败", -2));
+                    callback.onResponse(null,new HttpError("下载失败", -2));
                 }
 
             }

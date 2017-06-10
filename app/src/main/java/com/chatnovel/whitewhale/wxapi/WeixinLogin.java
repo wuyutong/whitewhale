@@ -1,6 +1,10 @@
-package com.chatnovel.whitewhale.thirdparty.wxapi;
+package com.chatnovel.whitewhale.wxapi;
 import android.content.Context;
+import android.widget.Toast;
+
 import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
+import com.chatnovel.whitewhale.common.WWInterface;
+import com.chatnovel.whitewhale.network.HttpLogin;
 import com.chatnovel.whitewhale.utils.UIUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -51,7 +55,12 @@ public class WeixinLogin {
      * 微信登录，只需要传入code,剩余的工作服务端完成，
      * @param code
      */
-    public void wxcodelogin(String code) {
-
+    public void wxCodeLogin(String code) {
+        HttpLogin.weixinLogin(code, new WWInterface.IString() {
+            @Override
+            public void onResult(String s) {
+                Toast.makeText(WhiteWhaleApplication.applicationContext, s, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

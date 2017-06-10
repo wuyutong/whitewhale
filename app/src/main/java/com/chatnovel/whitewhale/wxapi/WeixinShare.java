@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.thirdparty.wxapi;
+package com.chatnovel.whitewhale.wxapi;
 
 /**
  * Created by Wyatt on 2017/6/6/006.

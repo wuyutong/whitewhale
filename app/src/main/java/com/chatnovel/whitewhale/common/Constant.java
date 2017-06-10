@@ -5,11 +5,7 @@ package com.chatnovel.whitewhale.common;
  */
 
 public class Constant {
-    public static final String DATE = "date";
-    public static final String DOMAIN = "domain";
-
-    public static final String HOST_NAME = "api.doufu.diaobao.la";
-    public static final String HOST_NAME_SECOND = "http://" + HOST_NAME;
-    public static final String BASE_URL = "http://" + Constant.HOST_NAME + "/index.php/";
+    public static final String HOST_NAME = "api.duihua.doufu.la";
+    public static final String BASE_URL = "http://" + Constant.HOST_NAME ;
 
 }

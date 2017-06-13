@@ -24,7 +24,9 @@
         <meta-data
             android:name="com.taobao.android.hotfix.RSASECRET"
             android:value="MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCOpxgLEdO4dXW61psjo4fBYY27C92mHikKLv+dartjqbMk/pSdroeB72vnsLL2+CAcuqc8Cea+Qxj0wY1wLUfTE4MlG1J5UZh1tXI/GAIPHolAcfGxkI0tfZNIe2vWl9a05aTRQuMNSPU0quJi2nYK4Y6eXWLgYvjvgK48O9oHYkw6GYu1LckjUZfHqwVifnsuC5VU9RZHTFwL9/lnzL7YfKPLv9mFvNUuSRy143BYwjNW+//d/Do0Rk4ZCnOIlpr3Z1MLpE9UTJDS6CIVi9dXgXzPJfCBQ2flVphmoHunLPIaT2FoiiWZOSEGB2qGSRSJmJCZ0kmMbw4U9nQUhXBjAgMBAAECggEAQsIz4EpReMuPcwanx7/p8jgDKfvdmLYYoqln+nVOiM+MBM4XIsvgopA3QVBSEH4CGS/Iv7Iqh/PCpBhIZqzqJf/FqgHlUN08qill89z6abTyqnQold5+E0HnQU5xIxYf5rxpq3zP4RG5nxIxq+1svJ7eLYKqmTP4J61i3NFtsXI9u4nmb4QZn2P3otQWpboZCknj0y0o0eQr/bEPW4bEm7vEpRjh9pv2JuEXjnkMDBwRB80CGdYYBho2x4dFEj/phMX3l7t9O85NSUB1oCTvvDbJoY5LxMsB+k7nUonUa4nQ3XE5JrkFf04RMrHK/+YdCMYnDeg/Uj70a9V1Hh3ggQKBgQDNxNevLGv+R/d0g9tPpovhHuSJlVTyMRL7PJg9bV6qpceLC3EHtAzB2dauolgTAPWG70mR2aHS9R00o8PF73jdsmcM5spWpCeBCcvQkoWMixtBuEiGRyS1/PYacSc4UT5GLXAodYx7ZQccHaxaZwhNwPbsFXJ/4VhobldA7Fce4QKBgQCxeer8qHRBuKHhGb7FIJ858xUZXJ904E+7cSlv6o2Ygl4EumKxb/ItP5YEghYAqnMiiCH+2H8uVfZcCQhntHxg7iFxDLQAaBCNcZ7OiyqedVYsMg9NQQ7c3d6ADN5rcIYMRYg+G6fXCnKewG621E4bagA29HZhhy1+0H20PL1LwwKBgQCincrarJ+YMKXWlhIvK27mdbSlKrgcQz4+ARBLk3C6KhO9xkgIj3l5hb/M+Y3jTuG7RsZ8lmL2RjJTlIy2k9+QTVp1brs/p7F0oBpL9k/G13SuBoaCYB0aGhUgpoYZUtOFQImf3+4q4pew156LP1vnnvVFdFmtyJhGx9T7AQyE4QKBgQCSGowY85TBhf2+EjO6lOCAFF2KQ3YCAaeh58b1G2L16lz8B3S4HjCAj5gwneb/JVMjWm6iHhiVTK9DlSwWM78xDNj6+Do3G3SE/MR/xJGRYYdPWua98pEJwp0pTW7NhBTWhWdjueCyZyd1CXYbjSu/5cPHefj60Q3jGEBj4Jz1gQKBgQC3ETH/lh2bkqpUGmxbeJf07Z2H2xKabydCaIR297q3K8UY6DPscJaw2D8x3YxStg6lZ3iGi+jeF8vzShcvVYLTzP6Mhro3oK/oxjqElN/mWsJkUJUiVpUg4flXlp9P92JWB8BU/RBzSHMX6bTNQTMshSGJzinNgxiOh9BCmPzQPg==" />
-
+        <meta-data
+            android:name="APPKEY_DENGTA"
+            android:value="1106205324" />
         <activity
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Light.NoTitleBar"
@@ -35,6 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".module.mycenter.UploadPortraitActivity"
+            />
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name=".module.MyCenterActivity"
@@ -59,6 +65,13 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <!-- 不使用QQ钱包,可删除以下代码 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="qwallet1106205324"/>
+            </intent-filter>
         </activity>
 
         <!-- 微信支付 -->
@@ -80,6 +93,24 @@
             android:exported="false"
             android:screenOrientation="behind" >
         </activity>
+
+        <!--分享相关-->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent1106205324"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

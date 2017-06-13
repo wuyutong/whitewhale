@@ -26,7 +26,7 @@ public class PayActivity extends BaseActivity {
         String data = getIntent().getStringExtra(INTENT_KEY_PAY_DATA);
         if (!TextUtils.isEmpty(data)) {
             //调用支付接口
-            Pingpp.createPayment(PayActivity.this, data);
+            Pingpp.createPayment(PayActivity.this, data,"qwallet1106205324");
         } else {
             //失败
             errorPay("支付失败");

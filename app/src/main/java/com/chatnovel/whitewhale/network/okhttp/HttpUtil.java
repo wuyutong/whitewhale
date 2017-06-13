@@ -2,8 +2,13 @@ package com.chatnovel.whitewhale.network.okhttp;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSONObject;
+import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
 import com.chatnovel.whitewhale.common.Constant;
+import com.chatnovel.whitewhale.sp.SharePreferenceKey;
+import com.chatnovel.whitewhale.sp.WWSharePreference;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,6 +71,11 @@ public class HttpUtil {
                 }
             }
             reqBuild.addHeader("Accept","application/x.chatnovel.v1+json");
+            String token = WWSharePreference.getSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,
+                    WhiteWhaleApplication.applicationContext, "");
+            if (!TextUtils.isEmpty(token)) {
+                reqBuild.addHeader("token",token);
+            }
             request = reqBuild.url(urlBuilder.build()).build();
 
 
@@ -78,6 +88,11 @@ public class HttpUtil {
                 formBody.add(entry.getKey(), toStringValue(entry.getValue()));
             }
             builder.addHeader("Accept","application/x.chatnovel.v1+json");
+            String token = WWSharePreference.getSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,
+                    WhiteWhaleApplication.applicationContext, "");
+            if (!TextUtils.isEmpty(token)) {
+                builder.addHeader("token",token);
+            }
             request = builder.post(formBody.build()).build();
         }
         return request;

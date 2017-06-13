@@ -1,6 +1,7 @@
 package com.chatnovel.whitewhale.weex.wxextend.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -8,12 +9,15 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.chatnovel.whitewhale.base.BaseActivity;
+import com.chatnovel.whitewhale.qqapi.QQService;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.wxextend.utils.TFWXUtil;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXResourceUtils;
+import com.tencent.connect.common.Constants;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +35,8 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
 
 
     private HashMap param;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +179,16 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_LOGIN) {
+            if (QQService.getmTencent() != null && QQService.getInstance() != null) {
+                QQService.getmTencent().handleLoginData(data, QQService.getInstance().listener);
+            }
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public void onViewCreated(WXSDKInstance instance, View view) {
         setContentView(view);
         final WeakReference<TFWXActivity> weakSelf = new WeakReference<TFWXActivity>(this);
@@ -203,6 +219,8 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
         }
 
     }
+
+
 
     @Override
     public void onRenderSuccess(WXSDKInstance instance, int width, int height) {

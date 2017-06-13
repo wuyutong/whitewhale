@@ -8,8 +8,13 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chatnovel.whitewhale.base.BaseActivity;
-import com.chatnovel.whitewhale.module.login.LoginType;
+import com.chatnovel.whitewhale.common.IntentKey;
+import com.chatnovel.whitewhale.module.mycenter.LoginType;
+import com.chatnovel.whitewhale.module.mycenter.UploadPortraitActivity;
 import com.chatnovel.whitewhale.module.pay.PayActivity;
+import com.chatnovel.whitewhale.qqapi.QQService;
+import com.chatnovel.whitewhale.sp.SharePreferenceKey;
+import com.chatnovel.whitewhale.sp.WWSharePreference;
 import com.chatnovel.whitewhale.wxapi.WeixinLogin;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXApplicationUtil;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
@@ -35,7 +40,10 @@ public class TFBridgeMoule extends WXModule {
         TFBridgeTypeWeb(0),//打开web页面
         TFBridgeTypeLogin(1),//登录
         TFBridgeTypePay(2),//支付
-        TFBridgeTypeShare(3),
+        TFBridgeTypeShare(3), //分享
+        TFBridgeTypeUploadPortrait(4), //上传头像
+        TFBridgeTypeExit(5), //退出登录
+
         TFBridgeTypeStatusBarLight(13),// 状态栏边成白色
         TFBridgeTypeStatusBarDark(14);// 状态栏边成黑色
         
@@ -68,7 +76,6 @@ public class TFBridgeMoule extends WXModule {
                         jon.put("url",temp);
                         pageParam = jon;
                     }
-
                 }
                 switch (type){
                     case TFBridgeTypeWeb:  //打开web页面
@@ -82,7 +89,11 @@ public class TFBridgeMoule extends WXModule {
                         break;
                     case TFBridgeTypeShare://分享
                         break;
-
+                    case TFBridgeTypeUploadPortrait://上传头像
+                        uploadPortrait(pageParam);
+                        break;
+                    case TFBridgeTypeExit:
+                        exitLogin();
                     case TFBridgeTypeStatusBarLight:
                         try {
                             TFWXActivity activity = (TFWXActivity) mWXSDKInstance.getContext();
@@ -110,6 +121,19 @@ public class TFBridgeMoule extends WXModule {
         }
     }
 
+
+    private void exitLogin() {
+        WWSharePreference.clear(SharePreferenceKey.SP_KEY_TOKEN,mWXSDKInstance.getContext());
+    }
+
+    private void uploadPortrait(JSONObject jsonObject) {
+        int type = jsonObject.getInteger("type");
+        Intent intent = new Intent();
+        intent.setClass(mWXSDKInstance.getContext(), UploadPortraitActivity.class);
+        intent.putExtra(IntentKey.UPLOAD_PORTRAIT, type);
+        mWXSDKInstance.getContext().startActivity(intent);
+    }
+
     private void pay(JSONObject jsonObject) {
         Intent intent = new Intent();
         intent.setClass(mWXSDKInstance.getContext(), PayActivity.class);
@@ -122,7 +146,7 @@ public class TFBridgeMoule extends WXModule {
         if (loginType == LoginType.Weixin) {
             WeixinLogin.getInstance(mWXSDKInstance.getContext()).sendWeChatLogin();
         } else if (loginType == LoginType.QQ) {
-
+            QQService.getInstance().login((Activity) mWXSDKInstance.getContext());
         } else if (loginType == LoginType.Weibo) {
 
         }
@@ -151,6 +175,18 @@ public class TFBridgeMoule extends WXModule {
         }
 
     }
+
+
+    @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
+    public void token(JSCallback callback){
+        String uid = WWSharePreference.getSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,mWXSDKInstance.getContext(),"");
+        if (callback != null){
+            HashMap param = new HashMap();
+            param.put("token", uid);
+            callback.invoke(param);
+        }
+    }
+
 
     @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
     public void uid(JSCallback callback){

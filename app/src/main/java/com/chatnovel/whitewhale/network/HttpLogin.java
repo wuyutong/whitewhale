@@ -1,5 +1,6 @@
 package com.chatnovel.whitewhale.network;
 
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -21,14 +22,42 @@ public class HttpLogin {
     public static void weixinLogin(String code, final WWInterface.IString iString) {
         HashMap<String, String> param = new HashMap<>();
         param.put("code", code);
-        HttpUtil.requestGet(Constant.BASE_URL+"/api/loginByWxCode", param, new HttpResponse() {
+        HttpUtil.requestPost(Constant.BASE_URL+"/api/loginByWxCode", param, new HttpResponse() {
             @Override
             public void onResponse(JSONObject json, HttpError error) {
-                if (json != null && json.getInteger("code")== 0) {
-                    
-                    iString.onResult("登录成功");
+                if (json != null && json.getJSONObject("data")!=null && json.getInteger("code")== 0) {
+                    JSONObject obj = json.getJSONObject("data");
+                    String token = obj.getString("token");
+                    if (!TextUtils.isEmpty(token)) {
+                        iString.onResult(token);
+                    }else{
+                        iString.onResult("");
+                    }
+
                 }else{
-                    iString.onResult("登录失败");
+                    iString.onResult("");
+                }
+            }
+        });
+    }
+
+    public static void qqLogin(String access_token, final WWInterface.IString iString) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("access_token", access_token);
+        HttpUtil.requestPost(Constant.BASE_URL+"/api/loginByQQToken", param, new HttpResponse() {
+            @Override
+            public void onResponse(JSONObject json, HttpError error) {
+                if (json != null && json.getJSONObject("data")!=null && json.getInteger("code")== 0) {
+                    JSONObject obj = json.getJSONObject("data");
+                    String token = obj.getString("token");
+                    if (!TextUtils.isEmpty(token)) {
+                        iString.onResult(token);
+                    }else{
+                        iString.onResult("");
+                    }
+
+                }else{
+                    iString.onResult("");
                 }
             }
         });

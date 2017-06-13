@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.module.login;
+package com.chatnovel.whitewhale.module.mycenter;
 
 /**
  * Created by Wyatt on 2017/6/9/009.

@@ -1,14 +1,22 @@
 package com.chatnovel.whitewhale.wxapi;
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
 import com.chatnovel.whitewhale.common.WWInterface;
+import com.chatnovel.whitewhale.module.mycenter.LoginUtil;
 import com.chatnovel.whitewhale.network.HttpLogin;
+import com.chatnovel.whitewhale.sp.SharePreferenceKey;
+import com.chatnovel.whitewhale.sp.WWSharePreference;
 import com.chatnovel.whitewhale.utils.UIUtil;
+import com.chatnovel.whitewhale.weex.qlxkit.notification.QLXNotificationCenter;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Wyatt on 2017/6/6/006.
@@ -58,8 +66,13 @@ public class WeixinLogin {
     public void wxCodeLogin(String code) {
         HttpLogin.weixinLogin(code, new WWInterface.IString() {
             @Override
-            public void onResult(String s) {
-                Toast.makeText(WhiteWhaleApplication.applicationContext, s, Toast.LENGTH_LONG).show();
+            public void onResult(String token) {
+                WWSharePreference.setSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,token,mContext);
+                if (!TextUtils.isEmpty(token)) {
+                    LoginUtil.successLogin();
+                } else {
+                    LoginUtil.errorLogin("登录失败");
+                }
             }
         });
     }

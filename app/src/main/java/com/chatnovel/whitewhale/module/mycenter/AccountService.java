@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.module.login;
+package com.chatnovel.whitewhale.module.mycenter;
 public class AccountService {
 
     private static AccountService instance = new AccountService();

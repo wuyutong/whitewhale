@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.chatnovel.whitewhale.base.BaseActivity;
+import com.chatnovel.whitewhale.common.Constant;
 import com.chatnovel.whitewhale.qqapi.QQService;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.wxextend.utils.TFWXUtil;
@@ -162,12 +163,11 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
 
                 }
             });
-            if (newUrl.startsWith("http") == true){
-                wXSDKInstance.renderByUrl("TF",newUrl, option , null, -1, -1, WXRenderStrategy.APPEND_ASYNC);
+            if (url.startsWith("http") == true){
+                mWXSDKInstance.renderByUrl("WW",url, option , null, WXRenderStrategy.APPEND_ASYNC);
             }else {
-                wXSDKInstance.render("TF",newUrl, option , null, -1, -1, WXRenderStrategy.APPEND_ASYNC);
+                mWXSDKInstance.render("WW",url, option , null, WXRenderStrategy.APPEND_ASYNC);
             }
-
             if (presentWXSDKInstances == null){
                 presentWXSDKInstances = new ArrayList<>();
             }
@@ -184,8 +184,10 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
             if (QQService.getmTencent() != null && QQService.getInstance() != null) {
                 QQService.getmTencent().handleLoginData(data, QQService.getInstance().listener);
             }
-            super.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode == Constants.REQUEST_QQ_SHARE || requestCode == Constants.REQUEST_QZONE_SHARE) {
+                QQService.getmTencent().onActivityResult(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

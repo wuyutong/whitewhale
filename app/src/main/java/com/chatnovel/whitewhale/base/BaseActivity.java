@@ -86,6 +86,17 @@ public class BaseActivity extends FragmentActivity{
         }
 
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     // 移除
     public void removeWeexView(WXSDKInstance instance){
         try {

@@ -1,18 +1,14 @@
-package com.chatnovel.whitewhale.module.pay;
+package com.chatnovel.whitewhale.module.mycenter.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.chatnovel.whitewhale.base.BaseActivity;
-import com.chatnovel.whitewhale.weex.qlxkit.notification.QLXNotificationCenter;
+import com.chatnovel.whitewhale.module.mycenter.NotifyUtil;
 import com.pingplusplus.android.Pingpp;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Wyatt on 2017/6/10/010.
@@ -29,20 +25,12 @@ public class PayActivity extends BaseActivity {
             Pingpp.createPayment(PayActivity.this, data,"qwallet1106205324");
         } else {
             //失败
-            errorPay("支付失败");
+            NotifyUtil.errorPay("支付失败");
             finish();
         }
     }
 
-    private void successPay() {
-        QLXNotificationCenter.getInstance().postNotify("successPay",null);
-    }
 
-    private void errorPay(String msg){
-        Map<String, String> param = new HashMap<>();
-        param.put("msg",msg);
-        QLXNotificationCenter.getInstance().postNotify("errorPay",param);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -59,12 +47,12 @@ public class PayActivity extends BaseActivity {
                  */
                 if (!TextUtils.isEmpty(result)) {
                     if ("success".equals(result)) {
-                        successPay();
+                        NotifyUtil.successPay();
                     } else {
-                        errorPay(result);
+                        NotifyUtil.errorPay(result);
                     }
                 } else {
-                    errorPay("支付失败");
+                    NotifyUtil.errorPay("支付失败");
                 }
                 finish();
 //                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息

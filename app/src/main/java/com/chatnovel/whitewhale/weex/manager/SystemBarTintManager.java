@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * translucent system UI modes.
  *
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked" ,"ResourceType"})
 public class SystemBarTintManager {
 
     static {

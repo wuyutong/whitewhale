@@ -6,6 +6,7 @@ import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.wxextend.handler.WXImageAdapter;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFBridgeMoule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFCacheModule;
+import com.chatnovel.whitewhale.weex.wxextend.module.TFEventModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFHudModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFNotifyModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFStreamModule;
@@ -68,6 +69,7 @@ public class TFSDKManager {
             WXSDKEngine.registerComponent("qtextarea", Textarea.class);
             WXSDKEngine.registerModule("notify", TFNotifyModule.class);
             WXSDKEngine.registerModule("bridge", TFBridgeMoule.class);
+            WXSDKEngine.registerModule("event", TFEventModule.class);
             WXSDKEngine.registerModule("http", TFStreamModule.class);
             WXSDKEngine.registerModule("hud", TFHudModule.class);
             WXSDKEngine.registerModule("cache", TFCacheModule.class);

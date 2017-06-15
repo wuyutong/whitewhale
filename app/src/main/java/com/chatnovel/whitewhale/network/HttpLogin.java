@@ -22,7 +22,7 @@ public class HttpLogin {
     public static void weixinLogin(String code, final WWInterface.IString iString) {
         HashMap<String, String> param = new HashMap<>();
         param.put("code", code);
-        HttpUtil.requestPost(Constant.BASE_URL+"/api/loginByWxCode", param, new HttpResponse() {
+        HttpUtil.requestPost(Constant.BASE_URL+"loginByWxCode", param, new HttpResponse() {
             @Override
             public void onResponse(JSONObject json, HttpError error) {
                 if (json != null && json.getJSONObject("data")!=null && json.getInteger("code")== 0) {
@@ -44,7 +44,7 @@ public class HttpLogin {
     public static void qqLogin(String access_token, final WWInterface.IString iString) {
         HashMap<String, String> param = new HashMap<>();
         param.put("access_token", access_token);
-        HttpUtil.requestPost(Constant.BASE_URL+"/api/loginByQQToken", param, new HttpResponse() {
+        HttpUtil.requestPost(Constant.BASE_URL+"loginByQQToken", param, new HttpResponse() {
             @Override
             public void onResponse(JSONObject json, HttpError error) {
                 if (json != null && json.getJSONObject("data")!=null && json.getInteger("code")== 0) {

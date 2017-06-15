@@ -68,7 +68,7 @@ public class TFWXUtil {
             if (QLXApplicationUtil.isApkInDebug() == false){
                 test = false;
                 wxBaseUrl =  "http://api.doufu.diaobao.la/weex";
-            }else if(wxBaseUrl.indexOf("web/api.doufu.diaobao.la/weex") > 0){
+            }else if(wxBaseUrl.indexOf("chatnovel/public/weex") > 0){
                 test = true  ;
             }
 

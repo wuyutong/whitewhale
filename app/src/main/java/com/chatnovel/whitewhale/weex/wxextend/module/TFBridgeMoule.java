@@ -8,13 +8,17 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chatnovel.whitewhale.base.BaseActivity;
+import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
 import com.chatnovel.whitewhale.common.IntentKey;
+import com.chatnovel.whitewhale.model.ShareInfo;
 import com.chatnovel.whitewhale.module.mycenter.LoginType;
-import com.chatnovel.whitewhale.module.mycenter.UploadPortraitActivity;
-import com.chatnovel.whitewhale.module.pay.PayActivity;
+import com.chatnovel.whitewhale.module.mycenter.ShareType;
+import com.chatnovel.whitewhale.module.mycenter.activity.UploadPortraitActivity;
+import com.chatnovel.whitewhale.module.mycenter.activity.PayActivity;
 import com.chatnovel.whitewhale.qqapi.QQService;
 import com.chatnovel.whitewhale.sp.SharePreferenceKey;
 import com.chatnovel.whitewhale.sp.WWSharePreference;
+import com.chatnovel.whitewhale.weiboapi.WeiboLogin;
 import com.chatnovel.whitewhale.wxapi.WeixinLogin;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXApplicationUtil;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
@@ -43,7 +47,6 @@ public class TFBridgeMoule extends WXModule {
         TFBridgeTypeShare(3), //分享
         TFBridgeTypeUploadPortrait(4), //上传头像
         TFBridgeTypeExit(5), //退出登录
-
         TFBridgeTypeStatusBarLight(13),// 状态栏边成白色
         TFBridgeTypeStatusBarDark(14);// 状态栏边成黑色
         
@@ -88,6 +91,7 @@ public class TFBridgeMoule extends WXModule {
                         pay(pageParam);
                         break;
                     case TFBridgeTypeShare://分享
+                        share(pageParam);
                         break;
                     case TFBridgeTypeUploadPortrait://上传头像
                         uploadPortrait(pageParam);
@@ -121,6 +125,33 @@ public class TFBridgeMoule extends WXModule {
         }
     }
 
+    private void share(JSONObject jsonObject) {
+        try {
+            ShareInfo info = new ShareInfo();
+            info.setIcon(jsonObject.getString("cover"));
+            info.setTitle(jsonObject.getString("title"));
+            info.setShareText("测试数据");
+            info.setShareUrl("http://www.doufu.la");
+            int type = jsonObject.getInteger("type");
+            if (type == ShareType.Weixin) {
+                WeixinLogin.getInstance(mWXSDKInstance.getContext()).shareToWeixin(info);
+            }else if(type == ShareType.pengyouquan){
+                WeixinLogin.getInstance(mWXSDKInstance.getContext()).shareToPengyouquan(info);
+            } else if (type == ShareType.QQ) {
+                QQService.getInstance().shareToQQ((Activity) mWXSDKInstance.getContext(),info);
+            } else if (type == ShareType.QQSpace) {
+                QQService.getInstance().shareToQQSpace((Activity) mWXSDKInstance.getContext(),info);
+            } else if (type == ShareType.Weibo) {
+
+            }else{
+                Toast.makeText(WhiteWhaleApplication.applicationContext, "操作失败", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(WhiteWhaleApplication.applicationContext, "操作失败", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
 
     private void exitLogin() {
         WWSharePreference.clear(SharePreferenceKey.SP_KEY_TOKEN,mWXSDKInstance.getContext());
@@ -148,7 +179,7 @@ public class TFBridgeMoule extends WXModule {
         } else if (loginType == LoginType.QQ) {
             QQService.getInstance().login((Activity) mWXSDKInstance.getContext());
         } else if (loginType == LoginType.Weibo) {
-
+            WeiboLogin.getInstance().ssoAuthorize((Activity) mWXSDKInstance.getContext(),false);
         }
     }
 

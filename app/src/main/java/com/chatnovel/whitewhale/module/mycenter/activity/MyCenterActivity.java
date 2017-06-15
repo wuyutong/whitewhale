@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.module;
+package com.chatnovel.whitewhale.module.mycenter.activity;
 import android.os.Bundle;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.wxextend.activity.TFWXActivity;

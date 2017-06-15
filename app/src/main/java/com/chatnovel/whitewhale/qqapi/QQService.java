@@ -8,14 +8,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
 import com.chatnovel.whitewhale.common.WWInterface;
-import com.chatnovel.whitewhale.module.mycenter.LoginUtil;
+import com.chatnovel.whitewhale.model.ShareInfo;
+import com.chatnovel.whitewhale.module.mycenter.NotifyUtil;
 import com.chatnovel.whitewhale.network.HttpLogin;
 import com.chatnovel.whitewhale.sp.SharePreferenceKey;
 import com.chatnovel.whitewhale.sp.WWSharePreference;
 import com.chatnovel.whitewhale.utils.UIUtil;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+
+import java.util.ArrayList;
+
 public class QQService {
 	private static String APP_ID = "1106205324";
 	private static String SCOPE = "get_user_info,get_simple_userinfo,get_user_profile,get_app_friends," + "add_share,add_topic,list_album,upload_pic,add_album,set_user_face,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo";
@@ -77,13 +83,13 @@ public class QQService {
 		@Override
 		public void onError(UiError uiError) {
 			isLogin = false;
-			LoginUtil.errorLogin("登录失败");
+			NotifyUtil.errorLogin("登录失败");
 		}
 
 		@Override
 		public void onCancel() {
 			isLogin = false;
-			LoginUtil.errorLogin("取消登录");
+			NotifyUtil.errorLogin("取消登录");
 		}
 	};
 
@@ -97,30 +103,98 @@ public class QQService {
 					public void onResult(String token) {
 						WWSharePreference.setSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,token,WhiteWhaleApplication.applicationContext);
 						if (!TextUtils.isEmpty(token)) {
-							LoginUtil.successLogin();
+							NotifyUtil.successLogin();
 						} else {
-							LoginUtil.errorLogin("登录失败");
+							NotifyUtil.errorLogin("登录失败");
 						}
 					}
 				});
 			}else{
-				LoginUtil.errorLogin("登录失败");
+				NotifyUtil.errorLogin("登录失败");
 			}
 		} catch (Exception e) {
-			LoginUtil.errorLogin("登录失败");
+			NotifyUtil.errorLogin("登录失败");
 		}
 
 	}
 
 
+	public void shareToQQ(Activity activity,ShareInfo shareInfo) {
+		Bundle params = new Bundle();
+		String title,summary,extStr;
+		String shareUrl ;
+		String imgUrl ;
+		title = shareInfo.getTitle();
+		summary = shareInfo.getShareText();
+		extStr = shareInfo.getShareText();
+		shareUrl = shareInfo.getShareUrl();
+		imgUrl = shareInfo.getIcon();
+		params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+		params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+		params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+		params.putString(QQShare.SHARE_TO_QQ_EXT_STR, extStr);
+		params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, shareUrl);
+		params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imgUrl);
+		params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "豆腐");
+		mTencent.shareToQQ(activity, params, new IUiListener()
+		{
 
+			@Override
+			public void onError(UiError arg0) {
+				NotifyUtil.errorShare("分享失败");
+			}
 
-	public void shareToQQ(Activity activity, Bundle params, IUiListener listener) {
-		mTencent.shareToQQ(activity, params, listener);
+			@Override
+			public void onComplete(Object arg0) {
+				NotifyUtil.successShare();
+			}
+
+			@Override
+			public void onCancel() {
+				NotifyUtil.errorShare("取消分享");
+			}
+		});
 	}
 
-	public void shareToQZone(Activity activity, Bundle params,
-                             IUiListener listener) {
-		mTencent.shareToQzone(activity, params, listener);
+	public void shareToQQSpace(Activity activity,ShareInfo shareInfo) {
+
+
+		Bundle params = new Bundle();
+		String title, summary ;
+		String shareUrl ;
+		String imgUrl ;
+		title = shareInfo.getTitle();
+		summary = shareInfo.getShareText();
+		shareUrl = shareInfo.getShareUrl();
+		imgUrl = shareInfo.getIcon();
+		ArrayList<String> imgs = new ArrayList<String>();
+		imgs.add(imgUrl);
+		params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE,
+				QzoneShare.SHARE_TO_QZONE_TYPE_NO_TYPE);
+		params.putString(QQShare.SHARE_TO_QQ_TITLE, title);// 必填
+		params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);// 选填
+		params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, shareUrl);// 必填
+		params.putStringArrayList(QQShare.SHARE_TO_QQ_IMAGE_URL, imgs);
+		mTencent.shareToQzone(activity, params, new IUiListener()
+		{
+			@Override
+			public void onError(UiError arg0)
+			{
+				NotifyUtil.errorShare("分享失败");
+			}
+
+			@Override
+			public void onComplete(Object arg0)
+			{
+				NotifyUtil.successShare();
+			}
+
+			@Override
+			public void onCancel()
+			{
+				NotifyUtil.errorShare("取消分享");
+			}
+		});
+
 	}
 }

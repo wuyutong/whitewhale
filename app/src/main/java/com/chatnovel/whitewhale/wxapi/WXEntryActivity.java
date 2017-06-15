@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.chatnovel.whitewhale.R;
 import com.chatnovel.whitewhale.base.BaseActivity;
+import com.chatnovel.whitewhale.module.mycenter.NotifyUtil;
 import com.chatnovel.whitewhale.utils.UIUtil;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -64,20 +65,19 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
 			//分享调用处理
 			switch (resp.errCode) {
 				case BaseResp.ErrCode.ERR_OK:
-					result = R.string.errcode_success;
-					Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+					NotifyUtil.successShare();
 					break;
 				case BaseResp.ErrCode.ERR_USER_CANCEL:
 					result = R.string.errcode_cancel;
-					Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+					NotifyUtil.errorShare(getString(result));
 					break;
 				case BaseResp.ErrCode.ERR_AUTH_DENIED:
 					result = R.string.errcode_deny;
-					Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+					NotifyUtil.errorShare(getString(result));
 					break;
 				default:
 					result = R.string.errcode_unknown;
-					Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+					NotifyUtil.errorShare(getString(result));
 					break;
 			}
 		}

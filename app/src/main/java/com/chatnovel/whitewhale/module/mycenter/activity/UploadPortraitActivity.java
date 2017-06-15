@@ -1,4 +1,4 @@
-package com.chatnovel.whitewhale.module.mycenter;
+package com.chatnovel.whitewhale.module.mycenter.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,12 +7,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chatnovel.whitewhale.base.BaseActivity;
 import com.chatnovel.whitewhale.common.Constant;
 import com.chatnovel.whitewhale.common.IntentKey;
+import com.chatnovel.whitewhale.common.WWInterface;
+import com.chatnovel.whitewhale.module.mycenter.NotifyUtil;
+import com.chatnovel.whitewhale.network.HttpImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -78,8 +83,13 @@ public class UploadPortraitActivity extends BaseActivity{
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             userBitmap.compress(Bitmap.CompressFormat.PNG, 60, stream);
             byte[] b = stream.toByteArray(); // 将图片流以字符串形式存储下来 tp = new
-            String imageData = Base64.encodeToString(b, Base64.DEFAULT);
-            Toast.makeText(this, "上传", Toast.LENGTH_LONG).show();
+            String imageData = "data:image/png;base64,"+Base64.encodeToString(b, Base64.DEFAULT);
+            HttpImage.uploadImage(imageData, new WWInterface.IString() {
+                @Override
+                public void onResult(String url) {
+                    NotifyUtil.notifyHeadUrl(url);
+                }
+            });
             finish();
         }
     }

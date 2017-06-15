@@ -12,9 +12,8 @@
     <application
         android:name=".base.WhiteWhaleApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.Light">
         <!-- 阿里百川HotFix集成配置 -->
@@ -39,15 +38,15 @@
         </activity>
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:name=".module.mycenter.UploadPortraitActivity"
+            android:name=".module.mycenter.activity.UploadPortraitActivity"
             />
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:name=".module.MyCenterActivity"
+            android:name=".module.mycenter.activity.MyCenterActivity"
             />
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:name=".module.pay.PayActivity"
+            android:name=".module.mycenter.activity.PayActivity"
             />
         <activity
             android:configChanges="orientation|keyboardHidden|navigation"

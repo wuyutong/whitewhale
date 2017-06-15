@@ -27,12 +27,12 @@ import java.util.List;
 public class WeiboLogin {
     public static final String SINA_WEIBO_USER_INFO_URL = "https://api.weibo.com/2/users/show.json";
 
-    private static final String REFRESH_URL = "https://api.weibo.com/oauth2/access_token";
+    private static final String REFRESH_URL = "http://www.doufu.la";
     /**
      * 新浪微博 第三方应用 APP_KEY
      */
-    public static final String APP_KEY = "2476545949";
-    public static final String REDIRECT_URL = "http://www.sharereader.cn";
+    public static final String APP_KEY = "1329503924";
+    public static final String REDIRECT_URL = "http://www.doufu.la";
     /**
      * 封装了 "access_token"，"expires_in"，"refresh_token"，并提供了他们的管理功能
      */
@@ -125,10 +125,9 @@ public class WeiboLogin {
     }
 
     public void refreshTokenRequest(Context context)
-    {    // https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=refresh_token&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&refresh_token=…
+    {
         final Oauth2AccessToken token = WeiboLogin.getInstance().mAccessToken;
         WeiboParameters params = new WeiboParameters(APP_KEY);
-//        params.add("client_id", Constant.APP_KEY);
         params.add("client_secret", "1977434707b47437b33b24c887f7fafb");
         params.add("grant_type", "refresh_token");
         params.add("refresh_token", token.getRefreshToken());
@@ -177,16 +176,10 @@ public class WeiboLogin {
         params.add("source", APP_KEY);
         params.add("uid", mAccessToken.getUid());
         params.add("access_token", mAccessToken.getToken());
-        //params.add("uid", mAccessToken.getRefreshToken());
-        new AsyncWeiboRunner(activity).requestAsync(SINA_WEIBO_USER_INFO_URL, params, "GET", new RequestListener()
-        {
-
-
+        new AsyncWeiboRunner(activity).requestAsync(SINA_WEIBO_USER_INFO_URL, params, "GET", new RequestListener() {
             @Override
-            public void onComplete(String arg0)
-            {
-                try
-                {
+            public void onComplete(String arg0) {
+                try {
                     activity.runOnUiThread(new Runnable()
                     {
                         @Override

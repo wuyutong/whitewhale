@@ -13,6 +13,7 @@ import com.chatnovel.whitewhale.common.Constant;
 import com.chatnovel.whitewhale.qqapi.QQService;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXGlobal;
 import com.chatnovel.whitewhale.weex.wxextend.utils.TFWXUtil;
+import com.chatnovel.whitewhale.weiboapi.WeiboLogin;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
@@ -42,9 +43,9 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        View rootView = new View(this);
+        View rootView = new View(this);
 //        rootView.setBackgroundColor(WXResourceUtils.getColor("bg|bg"));
-//        setContentView(rootView);
+        setContentView(rootView);
 
         mWXSDKInstance = new WXSDKInstance(this);
         mWXSDKInstance.registerRenderListener(this);
@@ -115,8 +116,7 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
     public void removeWeexView(WXSDKInstance instance){
         if (presentWXSDKInstances != null){
             if (presentWXSDKInstances.contains(instance)){
-//                mWXSDKInstance.getRootView().removeView(instance.getRootView());
-                mWXSDKInstance.removeFixedView(instance.getRootView());
+                mWXSDKInstance.removeFixedView(instance.getContainerView());
                 instance.onActivityDestroy();
                 presentWXSDKInstances.remove(instance);
             }
@@ -133,14 +133,14 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
             }
             String newUrl = TFWXUtil.handleWXUrl(url);
 
-            final WeakReference<TFWXActivity> weakSelf = new WeakReference<TFWXActivity>(this);
+            final WeakReference<TFWXActivity> weakSelf = new WeakReference<>(this);
             WXSDKInstance wXSDKInstance = new WXSDKInstance(this);
             wXSDKInstance.registerRenderListener(new IWXRenderListener() {
                 @Override
                 public void onViewCreated(WXSDKInstance instance, View view) {
                     TFWXActivity self = weakSelf.get();
                     if (self != null){
-                        View rView = self.mWXSDKInstance.getRootView();
+                        View rView = self.mWXSDKInstance.getContainerView();
                         if (rView instanceof ViewGroup){
                           view.setBackgroundColor(Color.argb(0,0,0,0));
                             ((ViewGroup)rView).addView(view);
@@ -148,9 +148,10 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
                     }
                 }
 
+
                 @Override
                 public void onRenderSuccess(WXSDKInstance instance, int width, int height) {
-                       instance.getRootView().bringToFront();
+                       instance.getContainerView().bringToFront();
                 }
 
                 @Override
@@ -163,10 +164,10 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
 
                 }
             });
-            if (url.startsWith("http") == true){
-                mWXSDKInstance.renderByUrl("WW",url, option , null, WXRenderStrategy.APPEND_ASYNC);
+            if (newUrl.startsWith("http") == true){
+                wXSDKInstance.renderByUrl("WWchild",newUrl, option , null, WXRenderStrategy.APPEND_ONCE);
             }else {
-                mWXSDKInstance.render("WW",url, option , null, WXRenderStrategy.APPEND_ASYNC);
+                wXSDKInstance.render("WWchild",newUrl, option , null, WXRenderStrategy.APPEND_ONCE);
             }
             if (presentWXSDKInstances == null){
                 presentWXSDKInstances = new ArrayList<>();
@@ -185,7 +186,11 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
                 QQService.getmTencent().handleLoginData(data, QQService.getInstance().listener);
             }
         } else if (requestCode == Constants.REQUEST_QQ_SHARE || requestCode == Constants.REQUEST_QZONE_SHARE) {
-                QQService.getmTencent().onActivityResult(requestCode, resultCode, data);
+                QQService.getmTencent().handleResultData(data,QQService.getInstance().shareListener);
+        }else {
+            if (WeiboLogin.getInstance() != null && WeiboLogin.getInstance().mSsoHandler != null) {
+                WeiboLogin.getInstance().sinaAuthorizeCallBack(requestCode, resultCode, data);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -203,8 +208,8 @@ public class TFWXActivity extends BaseActivity implements IWXRenderListener {
                         if (self.presentWXSDKInstances != null){
                             if (self.presentWXSDKInstances.size() > 0){
                                 WXSDKInstance inatance = self.presentWXSDKInstances.get(self.presentWXSDKInstances.size() - 1);
-                                if (inatance.getRootView() != null){
-                                    inatance.getRootView().bringToFront();
+                                if (inatance.getContainerView() != null){
+                                    inatance.getContainerView().bringToFront();
                                 }
 
                             }

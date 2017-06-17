@@ -19,6 +19,30 @@ import java.util.HashMap;
 
 public class HttpLogin {
 
+
+    public static void weiboLogin(String access_token,String refresh_token, final WWInterface.IString iString) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("access_token", access_token);
+        param.put("refresh_token", refresh_token);
+        HttpUtil.requestPost(Constant.BASE_URL+"loginByWbToken", param, new HttpResponse() {
+            @Override
+            public void onResponse(JSONObject json, HttpError error) {
+                if (json != null && json.getJSONObject("data")!=null && json.getInteger("code")== 0) {
+                    JSONObject obj = json.getJSONObject("data");
+                    String token = obj.getString("token");
+                    if (!TextUtils.isEmpty(token)) {
+                        iString.onResult(token);
+                    }else{
+                        iString.onResult("");
+                    }
+
+                }else{
+                    iString.onResult("");
+                }
+            }
+        });
+    }
+
     public static void weixinLogin(String code, final WWInterface.IString iString) {
         HashMap<String, String> param = new HashMap<>();
         param.put("code", code);

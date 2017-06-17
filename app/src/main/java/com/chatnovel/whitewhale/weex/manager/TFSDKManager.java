@@ -9,6 +9,7 @@ import com.chatnovel.whitewhale.weex.wxextend.module.TFCacheModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFEventModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFHudModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFNotifyModule;
+import com.chatnovel.whitewhale.weex.wxextend.module.TFStatusBarModule;
 import com.chatnovel.whitewhale.weex.wxextend.module.TFStreamModule;
 import com.chatnovel.whitewhale.weex.wxextend.utils.TFHotUpdateUtil;
 import com.taobao.hotfix.HotFixManager;
@@ -73,6 +74,7 @@ public class TFSDKManager {
             WXSDKEngine.registerModule("http", TFStreamModule.class);
             WXSDKEngine.registerModule("hud", TFHudModule.class);
             WXSDKEngine.registerModule("cache", TFCacheModule.class);
+            WXSDKEngine.registerModule("statusbar", TFStatusBarModule.class);
             TFHotUpdateUtil.updateIfNeed();
         }catch (Exception e){
             e.printStackTrace();

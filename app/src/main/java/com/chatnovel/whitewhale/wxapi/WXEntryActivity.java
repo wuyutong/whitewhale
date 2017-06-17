@@ -53,13 +53,13 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
 
 	@Override
 	public void onResp(BaseResp resp) {
-		int result = 0;
+		int result;
 		if (resp.getType() == ConstantsAPI.COMMAND_SENDAUTH) {//登陆授权
 			if (resp.errCode == BaseResp.ErrCode.ERR_OK){//用户同意
 				String code = ((SendAuth.Resp) resp).code;
 				WeixinLogin.getInstance(this).wxCodeLogin(code);
 			}else {
-				UIUtil.toastMessage(this, "授权失败，请重新登录");
+				NotifyUtil.errorLogin("授权失败，请重新登录");
 			}
 		}else {
 			//分享调用处理

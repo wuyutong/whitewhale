@@ -6,4 +6,5 @@ package com.chatnovel.whitewhale.common;
 
 public class IntentKey {
     public static final String UPLOAD_PORTRAIT = "upload_portrait";
+    public static final String SHARE_INFO = "share_info";
 }

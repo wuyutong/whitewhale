@@ -19,8 +19,8 @@ import java.util.HashMap;
 
 public class TFWXUtil {
 
-//    public static String wxBaseUrl = "https://api.doufu.la/weex";
-   public static  String wxBaseUrl = "http://10.0.0.9/chatnovel/public/weex";//test
+    public static String wxBaseUrl = "http://api.duihua.doufu.la/weex";
+//   public static  String wxBaseUrl = "http://10.0.0.9/chatnovel/public/weex";//test
 
     public static HashMap dayColorMap = null ;
     public static HashMap nightColorMap = null ;

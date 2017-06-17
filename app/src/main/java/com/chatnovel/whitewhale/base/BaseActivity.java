@@ -1,6 +1,8 @@
 package com.chatnovel.whitewhale.base;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import com.chatnovel.whitewhale.weex.wxextend.utils.TFWXUtil;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -88,13 +92,21 @@ public class BaseActivity extends FragmentActivity{
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        PushAgent.getInstance(this).onAppStart();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     // 移除

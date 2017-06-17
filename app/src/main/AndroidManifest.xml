@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="1"
+    android:versionName="1.0"
     package="com.chatnovel.whitewhale">
 
     <!-- 通用权限 -->
@@ -26,6 +28,18 @@
         <meta-data
             android:name="APPKEY_DENGTA"
             android:value="1106205324" />
+        <!--友盟-->
+        <meta-data android:value="59422c88aed179676e000708" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>
+        <!--友盟推送-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59422c88aed179676e000708">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="45d2aa157665fd7c13417dd2b1034018">
+        </meta-data>
         <activity
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Light.NoTitleBar"
@@ -43,6 +57,10 @@
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name=".module.mycenter.activity.MyCenterActivity"
+            />
+        <activity
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".weiboapi.SinaWeiboActivity"
             />
         <activity
             android:theme="@android:style/Theme.Light.NoTitleBar"

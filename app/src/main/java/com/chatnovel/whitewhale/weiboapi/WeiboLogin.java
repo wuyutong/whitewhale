@@ -2,9 +2,15 @@ package com.chatnovel.whitewhale.weiboapi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.Toast;
 import com.chatnovel.whitewhale.base.WhiteWhaleApplication;
+import com.chatnovel.whitewhale.common.WWInterface;
+import com.chatnovel.whitewhale.module.mycenter.NotifyUtil;
+import com.chatnovel.whitewhale.network.HttpLogin;
+import com.chatnovel.whitewhale.sp.SharePreferenceKey;
+import com.chatnovel.whitewhale.sp.WWSharePreference;
 import com.chatnovel.whitewhale.utils.UIUtil;
 import com.sina.weibo.sdk.auth.AccessTokenKeeper;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -64,7 +70,7 @@ public class WeiboLogin {
         return instance;
     }
 
-    public void ssoAuthorize(Activity activity, final boolean isFlag)
+    public void ssoAuthorize(Activity activity)
     {
         this.activity = activity;
         mSsoHandler = new SsoHandler(activity);
@@ -74,47 +80,43 @@ public class WeiboLogin {
             return;
         }
         isLogin = true;
-        mSsoHandler.authorize(new WbAuthListener()
-        {
+        mSsoHandler.authorize(new WbAuthListener() {
 
             @Override
             public void onSuccess(Oauth2AccessToken oauth2AccessToken) {
                 isLogin = false;
-                mAccessToken = oauth2AccessToken;
-                Toast toast;
-                if (mAccessToken.isSessionValid())
-                {
-                    // 保存 Token 到 SharedPreferences
-                    AccessTokenKeeper.writeAccessToken(WhiteWhaleApplication.applicationContext, mAccessToken);
-                    if (isFlag) {
-                        return;
-
-                    }
-                    UIUtil.toastMessage(WeiboLogin.this.activity, "微博授权成功，正在获取用户信息");
-                    loadWeiboUserInfo();
-                } else
-                {
-                    toast = Toast.makeText(WeiboLogin.this.activity, "授权失败，请重新登录", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    UIUtil.dismissDialog();
-                }
+                login(oauth2AccessToken);
             }
 
             @Override
             public void cancel() {
                 isLogin = false;
-                UIUtil.toastMessage(WeiboLogin.this.activity, "授权失败，请重新登录");
-                UIUtil.dismissDialog();
             }
 
             @Override
             public void onFailure(WbConnectErrorMessage wbConnectErrorMessage) {
                 isLogin = false;
-                UIUtil.toastMessage(null, "授权失败:" + wbConnectErrorMessage.getErrorMessage());
-                UIUtil.dismissDialog();
             }
         });
+    }
+
+    private void login(Oauth2AccessToken oauth2AccessToken) {
+        if (oauth2AccessToken != null) {
+            HttpLogin.weiboLogin(oauth2AccessToken.getToken(), oauth2AccessToken.getRefreshToken(), new WWInterface.IString() {
+                @Override
+                public void onResult(String token) {
+                    WWSharePreference.setSharedPreferencesValueToString(SharePreferenceKey.SP_KEY_TOKEN,token,WhiteWhaleApplication.applicationContext);
+                    if (!TextUtils.isEmpty(token)) {
+                        NotifyUtil.successLogin();
+                    } else {
+                        NotifyUtil.errorLogin("登录失败");
+                    }
+                }
+            });
+        }else{
+            NotifyUtil.errorLogin("登录失败");
+        }
+
     }
 
 

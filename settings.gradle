@@ -1,1 +1,1 @@
-include ':app', ':weex_sdk'
+include ':app', ':weex_sdk', ':PushSDK'

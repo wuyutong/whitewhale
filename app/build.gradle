@@ -2,16 +2,20 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '25.0.0'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.chatnovel.whitewhale"
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 19
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
     buildTypes {
         release {
@@ -74,4 +78,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile files('libs/mta-sdk-1.6.2.jar')
     compile files('libs/open_sdk_r5788_lite.jar')
+    //友盟
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile project(':PushSDK')
 }

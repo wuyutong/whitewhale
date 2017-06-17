@@ -18,6 +18,7 @@ import com.chatnovel.whitewhale.module.mycenter.activity.PayActivity;
 import com.chatnovel.whitewhale.qqapi.QQService;
 import com.chatnovel.whitewhale.sp.SharePreferenceKey;
 import com.chatnovel.whitewhale.sp.WWSharePreference;
+import com.chatnovel.whitewhale.weiboapi.SinaWeiboActivity;
 import com.chatnovel.whitewhale.weiboapi.WeiboLogin;
 import com.chatnovel.whitewhale.wxapi.WeixinLogin;
 import com.chatnovel.whitewhale.weex.qlxkit.QLXApplicationUtil;
@@ -29,6 +30,8 @@ import com.chatnovel.whitewhale.weex.wxextend.utils.statusbar.StatusBarCompatFla
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,12 +130,19 @@ public class TFBridgeMoule extends WXModule {
 
     private void share(JSONObject jsonObject) {
         try {
-            ShareInfo info = new ShareInfo();
-            info.setIcon(jsonObject.getString("cover"));
-            info.setTitle(jsonObject.getString("title"));
-            info.setShareText("测试数据");
-            info.setShareUrl("http://www.doufu.la");
+            ShareInfo info = null;
             int type = jsonObject.getInteger("type");
+            JSONObject data = jsonObject.getJSONObject("data");
+            if (data != null ) {
+                JSONObject novel = data.getJSONObject("novel");
+                if (novel != null) {
+                    info = new ShareInfo();
+//                    info.setIcon(novel.getString("cover"));
+                    info.setTitle(novel.getString("title"));
+                    info.setShareText("测试数据");
+                    info.setShareUrl("http://www.doufu.la");
+                }
+            }
             if (type == ShareType.Weixin) {
                 WeixinLogin.getInstance(mWXSDKInstance.getContext()).shareToWeixin(info);
             }else if(type == ShareType.pengyouquan){
@@ -142,7 +152,10 @@ public class TFBridgeMoule extends WXModule {
             } else if (type == ShareType.QQSpace) {
                 QQService.getInstance().shareToQQSpace((Activity) mWXSDKInstance.getContext(),info);
             } else if (type == ShareType.Weibo) {
-
+                Intent intent = new Intent();
+                intent.setClass(mWXSDKInstance.getContext(), SinaWeiboActivity.class);
+                intent.putExtra(IntentKey.SHARE_INFO, info);
+                mWXSDKInstance.getContext().startActivity(intent);
             }else{
                 Toast.makeText(WhiteWhaleApplication.applicationContext, "操作失败", Toast.LENGTH_LONG).show();
             }
@@ -179,7 +192,7 @@ public class TFBridgeMoule extends WXModule {
         } else if (loginType == LoginType.QQ) {
             QQService.getInstance().login((Activity) mWXSDKInstance.getContext());
         } else if (loginType == LoginType.Weibo) {
-            WeiboLogin.getInstance().ssoAuthorize((Activity) mWXSDKInstance.getContext(),false);
+            WeiboLogin.getInstance().ssoAuthorize((Activity) mWXSDKInstance.getContext());
         }
     }
 
@@ -218,18 +231,6 @@ public class TFBridgeMoule extends WXModule {
         }
     }
 
-
-    @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
-    public void uid(JSCallback callback){
-        String uid = "";
-        if (callback != null){
-            HashMap param = new HashMap();
-            param.put("uid", Integer.valueOf(uid));
-            callback.invoke(param);
-        }
-    }
-
-
     @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
     public void openPageAlive(String jsonParam , final JSCallback callback){
         this.openPage(jsonParam, new JSCallback() {
@@ -255,6 +256,7 @@ public class TFBridgeMoule extends WXModule {
     @WXModuleAnno(moduleMethod = true,runOnUIThread = true)
     public void statistics(String eventName){
         //统计
+        MobclickAgent.onEvent(mWXSDKInstance.getContext(), eventName);
     }
 
     @WXModuleAnno(moduleMethod = true,runOnUIThread = true)

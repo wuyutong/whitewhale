@@ -2,6 +2,7 @@ package com.chatnovel.whitewhale.wxapi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -87,30 +88,43 @@ public class WeixinLogin {
         Glide.with(WhiteWhaleApplication.applicationContext).load(shareInfo.getIcon()).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap logoBitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                WXWebpageObject novelpageObj = new WXWebpageObject();
-                WXMediaMessage msg = new WXMediaMessage(novelpageObj);
-                novelpageObj.webpageUrl = shareInfo.getShareUrl();
-                msg.title = shareInfo.getTitle();
-                if (!TextUtils.isEmpty(shareInfo.getShareText())) {
-                    msg.description = shareInfo.getShareText();
-                }else{
-                    msg.description = "我最近在读的小说，推荐给你";
-                }
                 if (logoBitmap == null) {
                     logoBitmap = FetchResourceUtil.fetchBitmap(mContext.getResources(),
                             R.mipmap.app_icon);
                 }
-                if (logoBitmap != null) {
-                    Bitmap thumbBmp = ImageUtil.centerSquareScaleBitmap(logoBitmap, Constant.WXData.THUMB_WIDTH_SIZE);
-                    msg.thumbData = WXUtil.bmpToByteArray(thumbBmp, true);
-                }
-                SendMessageToWX.Req req = new SendMessageToWX.Req();
-                req.scene = SendMessageToWX.Req.WXSceneSession; // for wechat friends
-                req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message = msg;
-                api.sendReq(req);
+                uploadFriend(shareInfo, logoBitmap);
+
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                Bitmap logoBitmap = FetchResourceUtil.fetchBitmap(mContext.getResources(),
+                        R.mipmap.app_icon);
+                uploadFriend(shareInfo,logoBitmap);
             }
         });
+    }
+
+    private void uploadFriend(ShareInfo shareInfo, Bitmap logoBitmap) {
+        WXWebpageObject novelpageObj = new WXWebpageObject();
+        WXMediaMessage msg = new WXMediaMessage(novelpageObj);
+        novelpageObj.webpageUrl = shareInfo.getShareUrl();
+        msg.title = shareInfo.getTitle();
+        if (!TextUtils.isEmpty(shareInfo.getShareText())) {
+            msg.description = shareInfo.getShareText();
+        }else{
+            msg.description = "我最近在读的小说，推荐给你";
+        }
+        if (logoBitmap != null) {
+            Bitmap thumbBmp = ImageUtil.centerSquareScaleBitmap(logoBitmap, Constant.WXData.THUMB_WIDTH_SIZE);
+            msg.thumbData = WXUtil.bmpToByteArray(thumbBmp, true);
+        }
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.scene = SendMessageToWX.Req.WXSceneSession; // for wechat friends
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        api.sendReq(req);
     }
 
     // 朋友圈
@@ -136,28 +150,40 @@ public class WeixinLogin {
                     logoBitmap = FetchResourceUtil.fetchBitmap(mContext.getResources(),
                             R.mipmap.app_icon);
                 }
-                WXWebpageObject novelpageObj = new WXWebpageObject();
-                novelpageObj.webpageUrl = shareInfo.getShareUrl();
-                WXMediaMessage msg = new WXMediaMessage(novelpageObj);
-                StringBuilder showTitle = new StringBuilder();
-                showTitle.append(shareInfo.getTitle());
-                if (!TextUtils.isEmpty(shareInfo.getShareText())) {
-                    showTitle.append(":");
-                    showTitle.append(shareInfo.getShareText());
-                }
-                msg.title = showTitle.toString();
-                msg.description = "这篇小说太赞了！";
-                if (logoBitmap != null) {
-                    Bitmap thumbBmp = Bitmap.createScaledBitmap(logoBitmap, Constant.WXData.THUMB_WIDTH_SIZE, Constant.WXData.THUMB_HEIGHT_SIZE, true);
-                    msg.thumbData = WXUtil.bmpToByteArray(thumbBmp, true);
-                }
-                SendMessageToWX.Req req = new SendMessageToWX.Req();
-                req.scene = SendMessageToWX.Req.WXSceneTimeline; // for pengyou quan
-                req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message = msg;
-                api.sendReq(req);
+                uploadPengyouquan(shareInfo,logoBitmap);
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                Bitmap logoBitmap = FetchResourceUtil.fetchBitmap(mContext.getResources(),
+                        R.mipmap.app_icon);
+                uploadPengyouquan(shareInfo,logoBitmap);
             }
         });
+    }
+
+    private void uploadPengyouquan(ShareInfo shareInfo,Bitmap logoBitmap) {
+        WXWebpageObject novelpageObj = new WXWebpageObject();
+        novelpageObj.webpageUrl = shareInfo.getShareUrl();
+        WXMediaMessage msg = new WXMediaMessage(novelpageObj);
+        StringBuilder showTitle = new StringBuilder();
+        showTitle.append(shareInfo.getTitle());
+        if (!TextUtils.isEmpty(shareInfo.getShareText())) {
+            showTitle.append(":");
+            showTitle.append(shareInfo.getShareText());
+        }
+        msg.title = showTitle.toString();
+        msg.description = "这篇小说太赞了！";
+        if (logoBitmap != null) {
+            Bitmap thumbBmp = Bitmap.createScaledBitmap(logoBitmap, Constant.WXData.THUMB_WIDTH_SIZE, Constant.WXData.THUMB_HEIGHT_SIZE, true);
+            msg.thumbData = WXUtil.bmpToByteArray(thumbBmp, true);
+        }
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.scene = SendMessageToWX.Req.WXSceneTimeline; // for pengyou quan
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        api.sendReq(req);
     }
 
 

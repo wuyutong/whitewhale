@@ -135,29 +135,28 @@ public class QQService {
 		params.putString(QQShare.SHARE_TO_QQ_EXT_STR, extStr);
 		params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, shareUrl);
 		params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imgUrl);
-		params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "豆腐");
-		mTencent.shareToQQ(activity, params, new IUiListener()
-		{
-
-			@Override
-			public void onError(UiError arg0) {
-				NotifyUtil.errorShare("分享失败");
-			}
-
-			@Override
-			public void onComplete(Object arg0) {
-				NotifyUtil.successShare();
-			}
-
-			@Override
-			public void onCancel() {
-				NotifyUtil.errorShare("取消分享");
-			}
-		});
+		params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "白鲸");
+		mTencent.shareToQQ(activity, params,shareListener );
 	}
 
-	public void shareToQQSpace(Activity activity,ShareInfo shareInfo) {
+	public IUiListener shareListener  = new IUiListener() {
+		@Override
+		public void onError(UiError arg0) {
+			NotifyUtil.errorShare("分享失败");
+		}
 
+		@Override
+		public void onComplete(Object arg0) {
+			NotifyUtil.successShare();
+		}
+
+		@Override
+		public void onCancel() {
+			NotifyUtil.errorShare("取消分享");
+		}
+	};
+
+	public void shareToQQSpace(Activity activity,ShareInfo shareInfo) {
 
 		Bundle params = new Bundle();
 		String title, summary ;
@@ -175,26 +174,7 @@ public class QQService {
 		params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);// 选填
 		params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, shareUrl);// 必填
 		params.putStringArrayList(QQShare.SHARE_TO_QQ_IMAGE_URL, imgs);
-		mTencent.shareToQzone(activity, params, new IUiListener()
-		{
-			@Override
-			public void onError(UiError arg0)
-			{
-				NotifyUtil.errorShare("分享失败");
-			}
-
-			@Override
-			public void onComplete(Object arg0)
-			{
-				NotifyUtil.successShare();
-			}
-
-			@Override
-			public void onCancel()
-			{
-				NotifyUtil.errorShare("取消分享");
-			}
-		});
+		mTencent.shareToQzone(activity, params, shareListener);
 
 	}
 }
